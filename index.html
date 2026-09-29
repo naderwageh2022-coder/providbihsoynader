@@ -1,0 +1,2117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#070b14">
+<meta name="description" content="FINOVA - Enterprise Financial Management">
+<title>FINOVA | Enterprise Financial Management</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+:root{
+  --bg:#070b14;
+  --bg2:#0d1320;
+  --card:#101827;
+  --card2:#141e2e;
+  --border:rgba(255,255,255,.08);
+  --text:#f5f7fb;
+  --muted:#8994a7;
+  --primary:#6c63ff;
+  --primary2:#00c6ff;
+  --success:#22c55e;
+  --danger:#ef4444;
+  --warning:#f59e0b;
+  --sidebar:260px;
+}
+
+body{
+  font-family:Inter,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  overflow-x:hidden;
+}
+
+button,input,select,textarea{
+  font:inherit;
+}
+
+button{
+  border:0;
+  cursor:pointer;
+}
+
+.intro{
+  position:fixed;
+  inset:0;
+  z-index:99999;
+  background:
+    radial-gradient(circle at 50% 40%,rgba(108,99,255,.2),transparent 30%),
+    radial-gradient(circle at 20% 80%,rgba(0,198,255,.1),transparent 30%),
+    #050811;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+  transition:opacity .7s,visibility .7s;
+}
+
+.intro.hide{
+  opacity:0;
+  visibility:hidden;
+}
+
+.intro-grid{
+  position:absolute;
+  inset:0;
+  background-image:
+    linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);
+  background-size:45px 45px;
+  mask-image:linear-gradient(to bottom,transparent,black,transparent);
+}
+
+.intro-orb{
+  position:absolute;
+  width:500px;
+  height:500px;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(108,99,255,.2),transparent 65%);
+  filter:blur(10px);
+  animation:orb 5s ease-in-out infinite;
+}
+
+@keyframes orb{
+  0%,100%{transform:scale(1) translateY(0)}
+  50%{transform:scale(1.15) translateY(-25px)}
+}
+
+.intro-content{
+  position:relative;
+  z-index:2;
+  text-align:center;
+  padding:25px;
+}
+
+.intro-logo{
+  width:100px;
+  height:100px;
+  border-radius:28px;
+  margin:0 auto 28px;
+  display:grid;
+  place-items:center;
+  font-size:42px;
+  font-weight:800;
+  background:linear-gradient(135deg,var(--primary),var(--primary2));
+  box-shadow:0 25px 80px rgba(108,99,255,.35);
+  animation:logoFloat 3s ease-in-out infinite;
+}
+
+@keyframes logoFloat{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-10px)}
+}
+
+.intro-content h1{
+  font-size:clamp(55px,10vw,110px);
+  letter-spacing:-5px;
+  line-height:1;
+  background:linear-gradient(90deg,#fff,var(--primary2),#fff);
+  background-size:200%;
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+  animation:textFlow 3s linear infinite;
+}
+
+@keyframes textFlow{
+  to{background-position:200%}
+}
+
+.intro-content p{
+  margin-top:20px;
+  color:#aeb8c9;
+  letter-spacing:4px;
+  font-size:14px;
+  font-weight:600;
+}
+
+.intro-content small{
+  display:block;
+  margin-top:45px;
+  color:#687386;
+  font-size:12px;
+  letter-spacing:2px;
+}
+
+.app{
+  min-height:100vh;
+}
+
+.sidebar{
+  position:fixed;
+  top:0;
+  left:0;
+  bottom:0;
+  width:var(--sidebar);
+  background:rgba(10,15,25,.96);
+  border-right:1px solid var(--border);
+  z-index:1000;
+  display:flex;
+  flex-direction:column;
+  padding:24px 16px;
+  backdrop-filter:blur(20px);
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:5px 10px 28px;
+}
+
+.brand-icon{
+  width:43px;
+  height:43px;
+  border-radius:13px;
+  display:grid;
+  place-items:center;
+  font-weight:800;
+  background:linear-gradient(135deg,var(--primary),var(--primary2));
+  box-shadow:0 10px 30px rgba(108,99,255,.25);
+}
+
+.brand h2{
+  font-size:20px;
+  letter-spacing:1px;
+}
+
+.brand span{
+  display:block;
+  font-size:9px;
+  color:var(--muted);
+  letter-spacing:1px;
+  margin-top:2px;
+}
+
+.nav{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+
+.nav button{
+  width:100%;
+  display:flex;
+  align-items:center;
+  gap:13px;
+  padding:13px 14px;
+  color:#8f9aab;
+  background:transparent;
+  border-radius:12px;
+  text-align:left;
+  transition:.2s;
+}
+
+.nav button:hover,
+.nav button.active{
+  color:#fff;
+  background:linear-gradient(90deg,rgba(108,99,255,.18),rgba(0,198,255,.05));
+}
+
+.nav button.active{
+  box-shadow:inset 3px 0 var(--primary);
+}
+
+.nav svg{
+  width:19px;
+}
+
+.sidebar-bottom{
+  margin-top:auto;
+}
+
+.company-box{
+  padding:15px;
+  border:1px solid var(--border);
+  border-radius:15px;
+  background:rgba(255,255,255,.025);
+}
+
+.company-box span{
+  display:block;
+  color:var(--muted);
+  font-size:11px;
+  margin-bottom:6px;
+}
+
+.company-box strong{
+  font-size:13px;
+}
+
+.main{
+  margin-left:var(--sidebar);
+  min-height:100vh;
+}
+
+.topbar{
+  height:78px;
+  border-bottom:1px solid var(--border);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 30px;
+  background:rgba(7,11,20,.8);
+  backdrop-filter:blur(20px);
+  position:sticky;
+  top:0;
+  z-index:900;
+}
+
+.page-title h1{
+  font-size:20px;
+}
+
+.page-title p{
+  color:var(--muted);
+  font-size:12px;
+  margin-top:4px;
+}
+
+.top-actions{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.icon-btn{
+  width:40px;
+  height:40px;
+  display:grid;
+  place-items:center;
+  border-radius:11px;
+  background:var(--card);
+  color:#a8b1c1;
+  border:1px solid var(--border);
+}
+
+.profile{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-left:5px;
+}
+
+.avatar{
+  width:38px;
+  height:38px;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  background:linear-gradient(135deg,var(--primary),var(--primary2));
+  font-weight:700;
+}
+
+.profile div:last-child{
+  font-size:12px;
+}
+
+.profile span{
+  display:block;
+  color:var(--muted);
+  font-size:10px;
+  margin-top:2px;
+}
+
+.content{
+  padding:30px;
+}
+
+.page{
+  display:none;
+}
+
+.page.active{
+  display:block;
+  animation:pageIn .3s ease;
+}
+
+@keyframes pageIn{
+  from{opacity:0;transform:translateY(8px)}
+  to{opacity:1;transform:none}
+}
+
+.stats{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:16px;
+  margin-bottom:20px;
+}
+
+.stat{
+  padding:21px;
+  border:1px solid var(--border);
+  border-radius:18px;
+  background:linear-gradient(145deg,rgba(255,255,255,.045),rgba(255,255,255,.015));
+  position:relative;
+  overflow:hidden;
+}
+
+.stat:after{
+  content:"";
+  position:absolute;
+  width:100px;
+  height:100px;
+  right:-40px;
+  top:-40px;
+  border-radius:50%;
+  background:rgba(108,99,255,.08);
+}
+
+.stat-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.stat-icon{
+  width:42px;
+  height:42px;
+  border-radius:12px;
+  display:grid;
+  place-items:center;
+  background:rgba(108,99,255,.12);
+  color:#8e88ff;
+}
+
+.stat small{
+  color:var(--muted);
+  font-size:11px;
+}
+
+.stat h2{
+  margin-top:17px;
+  font-size:25px;
+}
+
+.stat-change{
+  margin-top:7px;
+  font-size:11px;
+  color:var(--success);
+}
+
+.dashboard-grid{
+  display:grid;
+  grid-template-columns:1.6fr 1fr;
+  gap:18px;
+}
+
+.card{
+  background:linear-gradient(145deg,rgba(255,255,255,.045),rgba(255,255,255,.015));
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:20px;
+}
+
+.card-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:18px;
+}
+
+.card-header h3{
+  font-size:15px;
+}
+
+.card-header span{
+  color:var(--muted);
+  font-size:11px;
+}
+
+.chart-wrap{
+  height:300px;
+}
+
+.transactions-list{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+
+.transaction{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:13px;
+  border-radius:12px;
+  background:rgba(255,255,255,.025);
+}
+
+.transaction-left{
+  display:flex;
+  align-items:center;
+  gap:11px;
+}
+
+.transaction-icon{
+  width:37px;
+  height:37px;
+  border-radius:10px;
+  display:grid;
+  place-items:center;
+}
+
+.transaction-icon.income{
+  color:var(--success);
+  background:rgba(34,197,94,.1);
+}
+
+.transaction-icon.expense{
+  color:var(--danger);
+  background:rgba(239,68,68,.1);
+}
+
+.transaction strong{
+  display:block;
+  font-size:12px;
+}
+
+.transaction small{
+  display:block;
+  color:var(--muted);
+  margin-top:3px;
+  font-size:10px;
+}
+
+.amount{
+  font-weight:700;
+  font-size:12px;
+}
+
+.amount.income{
+  color:var(--success);
+}
+
+.amount.expense{
+  color:var(--danger);
+}
+
+.section-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:15px;
+  margin-bottom:20px;
+}
+
+.section-head h2{
+  font-size:21px;
+}
+
+.section-head p{
+  color:var(--muted);
+  font-size:12px;
+  margin-top:4px;
+}
+
+.primary-btn{
+  padding:11px 17px;
+  border-radius:11px;
+  color:white;
+  background:linear-gradient(135deg,var(--primary),var(--primary2));
+  font-weight:700;
+  font-size:12px;
+  box-shadow:0 10px 25px rgba(108,99,255,.2);
+}
+
+.secondary-btn{
+  padding:11px 17px;
+  border-radius:11px;
+  color:#c6cedb;
+  background:var(--card);
+  border:1px solid var(--border);
+  font-size:12px;
+}
+
+.table-card{
+  overflow:hidden;
+  padding:0;
+}
+
+.table-wrap{
+  overflow-x:auto;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  min-width:650px;
+}
+
+th,td{
+  text-align:left;
+  padding:15px 18px;
+  border-bottom:1px solid var(--border);
+  font-size:12px;
+}
+
+th{
+  color:var(--muted);
+  font-size:10px;
+  text-transform:uppercase;
+  letter-spacing:.5px;
+}
+
+td{
+  color:#dce2eb;
+}
+
+.status{
+  display:inline-flex;
+  align-items:center;
+  padding:5px 9px;
+  border-radius:20px;
+  font-size:9px;
+  font-weight:700;
+}
+
+.status.paid{
+  background:rgba(34,197,94,.1);
+  color:#4ade80;
+}
+
+.status.pending{
+  background:rgba(245,158,11,.1);
+  color:#fbbf24;
+}
+
+.status.overdue{
+  background:rgba(239,68,68,.1);
+  color:#f87171;
+}
+
+.form-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:15px;
+}
+
+.form-group{
+  display:flex;
+  flex-direction:column;
+  gap:7px;
+}
+
+.form-group.full{
+  grid-column:1/-1;
+}
+
+.form-group label{
+  font-size:11px;
+  color:#aab3c2;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea{
+  width:100%;
+  padding:12px 13px;
+  background:#0b111c;
+  border:1px solid var(--border);
+  border-radius:10px;
+  outline:none;
+  color:#fff;
+  transition:.2s;
+}
+
+.form-group textarea{
+  min-height:100px;
+  resize:vertical;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus{
+  border-color:rgba(108,99,255,.6);
+  box-shadow:0 0 0 3px rgba(108,99,255,.08);
+}
+
+.empty{
+  text-align:center;
+  padding:55px 20px;
+  color:var(--muted);
+}
+
+.empty svg{
+  width:42px;
+  height:42px;
+  margin-bottom:12px;
+  opacity:.5;
+}
+
+.modal{
+  position:fixed;
+  inset:0;
+  z-index:9990;
+  background:rgba(0,0,0,.65);
+  backdrop-filter:blur(8px);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+}
+
+.modal.show{
+  display:flex;
+}
+
+.modal-box{
+  width:min(550px,100%);
+  max-height:90vh;
+  overflow-y:auto;
+  background:#101827;
+  border:1px solid var(--border);
+  border-radius:20px;
+  padding:24px;
+  box-shadow:0 30px 100px rgba(0,0,0,.45);
+}
+
+.modal-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:22px;
+}
+
+.modal-head h2{
+  font-size:18px;
+}
+
+.close{
+  width:35px;
+  height:35px;
+  border-radius:9px;
+  background:rgba(255,255,255,.05);
+  color:#aeb7c7;
+}
+
+.modal-actions{
+  display:flex;
+  justify-content:flex-end;
+  gap:10px;
+  margin-top:20px;
+}
+
+.mobile-menu{
+  display:none;
+}
+
+@media(max-width:1100px){
+  .stats{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+  .dashboard-grid{
+    grid-template-columns:1fr;
+  }
+}
+
+@media(max-width:800px){
+  :root{
+    --sidebar:0px;
+  }
+
+  .sidebar{
+    transform:translateX(-100%);
+    transition:.3s;
+    width:270px;
+  }
+
+  .sidebar.open{
+    transform:translateX(0);
+  }
+
+  .main{
+    margin-left:0;
+  }
+
+  .mobile-menu{
+    display:grid;
+  }
+
+  .topbar{
+    padding:0 15px;
+  }
+
+  .top-actions .profile{
+    display:none;
+  }
+
+  .content{
+    padding:18px 14px;
+  }
+
+  .stats{
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+  }
+
+  .stat{
+    padding:15px;
+  }
+
+  .stat h2{
+    font-size:19px;
+  }
+
+  .section-head{
+    align-items:flex-start;
+  }
+}
+
+@media(max-width:500px){
+  .intro-content h1{
+    font-size:65px;
+    letter-spacing:-4px;
+  }
+
+  .intro-content p{
+    font-size:10px;
+    letter-spacing:2px;
+  }
+
+  .intro-logo{
+    width:80px;
+    height:80px;
+    font-size:34px;
+  }
+
+  .stats{
+    grid-template-columns:1fr;
+  }
+
+  .form-grid{
+    grid-template-columns:1fr;
+  }
+
+  .form-group.full{
+    grid-column:auto;
+  }
+
+  .section-head{
+    flex-direction:column;
+  }
+
+  .section-head .primary-btn{
+    width:100%;
+  }
+
+  .topbar{
+    height:68px;
+  }
+
+  .page-title h1{
+    font-size:17px;
+  }
+
+  .page-title p{
+    font-size:10px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="intro" id="intro">
+  <div class="intro-grid"></div>
+  <div class="intro-orb"></div>
+
+  <div class="intro-content">
+    <div class="intro-logo">F</div>
+    <h1>FINOVA</h1>
+    <p>ENTERPRISE FINANCIAL MANAGEMENT</p>
+    <small>MADE BY BISHOY NADER WAGEH</small>
+  </div>
+</div>
+
+<div class="app" id="app" style="display:none">
+
+  <aside class="sidebar" id="sidebar">
+
+    <div class="brand">
+      <div class="brand-icon">F</div>
+      <div>
+        <h2>FINOVA</h2>
+        <span>ENTERPRISE FINANCE</span>
+      </div>
+    </div>
+
+    <nav class="nav">
+
+      <button class="active" data-page="dashboard">
+        <i data-lucide="layout-dashboard"></i>
+        <span>Dashboard</span>
+      </button>
+
+      <button data-page="transactions">
+        <i data-lucide="arrow-left-right"></i>
+        <span>Transactions</span>
+      </button>
+
+      <button data-page="accounts">
+        <i data-lucide="wallet-cards"></i>
+        <span>Accounts</span>
+      </button>
+
+      <button data-page="invoices">
+        <i data-lucide="file-text"></i>
+        <span>Invoices</span>
+      </button>
+
+      <button data-page="reports">
+        <i data-lucide="bar-chart-3"></i>
+        <span>Reports</span>
+      </button>
+
+      <button data-page="users">
+        <i data-lucide="users"></i>
+        <span>Users & Roles</span>
+      </button>
+
+      <button data-page="settings">
+        <i data-lucide="settings"></i>
+        <span>Settings</span>
+      </button>
+
+    </nav>
+
+    <div class="sidebar-bottom">
+      <div class="company-box">
+        <span>Company</span>
+        <strong>FINOVA Enterprise</strong>
+      </div>
+    </div>
+
+  </aside>
+
+  <main class="main">
+
+    <header class="topbar">
+
+      <div class="page-title">
+        <h1 id="pageTitle">Dashboard</h1>
+        <p id="pageSubtitle">Enterprise financial overview</p>
+      </div>
+
+      <div class="top-actions">
+
+        <button class="icon-btn mobile-menu" id="menuBtn">
+          <i data-lucide="menu"></i>
+        </button>
+
+        <button class="icon-btn">
+          <i data-lucide="bell"></i>
+        </button>
+
+        <button class="icon-btn">
+          <i data-lucide="search"></i>
+        </button>
+
+        <div class="profile">
+          <div class="avatar">F</div>
+          <div>
+            FINOVA
+            <span>Administrator</span>
+          </div>
+        </div>
+
+      </div>
+
+    </header>
+
+    <div class="content">
+
+      <section class="page active" id="dashboard">
+
+        <div class="stats">
+
+          <div class="stat">
+            <div class="stat-top">
+              <small>Total Revenue</small>
+              <div class="stat-icon">
+                <i data-lucide="trending-up"></i>
+              </div>
+            </div>
+            <h2 id="totalRevenue">$0</h2>
+            <div class="stat-change">+0% this month</div>
+          </div>
+
+          <div class="stat">
+            <div class="stat-top">
+              <small>Total Expenses</small>
+              <div class="stat-icon">
+                <i data-lucide="trending-down"></i>
+              </div>
+            </div>
+            <h2 id="totalExpenses">$0</h2>
+            <div class="stat-change">+0% this month</div>
+          </div>
+
+          <div class="stat">
+            <div class="stat-top">
+              <small>Net Profit</small>
+              <div class="stat-icon">
+                <i data-lucide="circle-dollar-sign"></i>
+              </div>
+            </div>
+            <h2 id="netProfit">$0</h2>
+            <div class="stat-change">Current balance</div>
+          </div>
+
+          <div class="stat">
+            <div class="stat-top">
+              <small>Outstanding</small>
+              <div class="stat-icon">
+                <i data-lucide="receipt"></i>
+              </div>
+            </div>
+            <h2 id="outstanding">$0</h2>
+            <div class="stat-change">Pending invoices</div>
+          </div>
+
+        </div>
+
+        <div class="dashboard-grid">
+
+          <div class="card">
+
+            <div class="card-header">
+              <h3>Financial Performance</h3>
+              <span>Last 6 months</span>
+            </div>
+
+            <div class="chart-wrap">
+              <canvas id="financeChart"></canvas>
+            </div>
+
+          </div>
+
+          <div class="card">
+
+            <div class="card-header">
+              <h3>Recent Transactions</h3>
+              <span>Latest</span>
+            </div>
+
+            <div class="transactions-list" id="recentTransactions">
+
+              <div class="empty">
+                <i data-lucide="receipt"></i>
+                <p>No transactions yet</p>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+      <section class="page" id="transactions">
+
+        <div class="section-head">
+          <div>
+            <h2>Transactions</h2>
+            <p>Manage all company financial transactions</p>
+          </div>
+
+          <button class="primary-btn" onclick="openModal('transactionModal')">
+            <i data-lucide="plus"></i>
+            Add Transaction
+          </button>
+        </div>
+
+        <div class="card table-card">
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Description</th>
+                  <th>Type</th>
+                  <th>Category</th>
+                  <th>Amount</th>
+                  <th>Date</th>
+                </tr>
+              </thead>
+              <tbody id="transactionsTable"></tbody>
+            </table>
+          </div>
+        </div>
+
+      </section>
+
+      <section class="page" id="accounts">
+
+        <div class="section-head">
+          <div>
+            <h2>Accounts</h2>
+            <p>Company bank and financial accounts</p>
+          </div>
+
+          <button class="primary-btn" onclick="openModal('accountModal')">
+            <i data-lucide="plus"></i>
+            Add Account
+          </button>
+        </div>
+
+        <div class="card table-card">
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Account</th>
+                  <th>Bank</th>
+                  <th>Type</th>
+                  <th>Balance</th>
+                </tr>
+              </thead>
+              <tbody id="accountsTable"></tbody>
+            </table>
+          </div>
+        </div>
+
+      </section>
+
+      <section class="page" id="invoices">
+
+        <div class="section-head">
+          <div>
+            <h2>Invoices</h2>
+            <p>Manage company invoices</p>
+          </div>
+
+          <button class="primary-btn" onclick="openModal('invoiceModal')">
+            <i data-lucide="plus"></i>
+            Add Invoice
+          </button>
+        </div>
+
+        <div class="card table-card">
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Invoice</th>
+                  <th>Client</th>
+                  <th>Amount</th>
+                  <th>Status</th>
+                  <th>Date</th>
+                </tr>
+              </thead>
+              <tbody id="invoicesTable"></tbody>
+            </table>
+          </div>
+        </div>
+
+      </section>
+
+      <section class="page" id="reports">
+
+        <div class="section-head">
+          <div>
+            <h2>Reports</h2>
+            <p>Financial reports and analytics</p>
+          </div>
+        </div>
+
+        <div class="stats">
+
+          <div class="stat">
+            <div class="stat-top">
+              <small>Revenue</small>
+              <div class="stat-icon">
+                <i data-lucide="line-chart"></i>
+              </div>
+            </div>
+            <h2 id="reportRevenue">$0</h2>
+          </div>
+
+          <div class="stat">
+            <div class="stat-top">
+              <small>Expenses</small>
+              <div class="stat-icon">
+                <i data-lucide="activity"></i>
+              </div>
+            </div>
+            <h2 id="reportExpenses">$0</h2>
+          </div>
+
+          <div class="stat">
+            <div class="stat-top">
+              <small>Profit</small>
+              <div class="stat-icon">
+                <i data-lucide="badge-dollar-sign"></i>
+              </div>
+            </div>
+            <h2 id="reportProfit">$0</h2>
+          </div>
+
+          <div class="stat">
+            <div class="stat-top">
+              <small>Invoices</small>
+              <div class="stat-icon">
+                <i data-lucide="files"></i>
+              </div>
+            </div>
+            <h2 id="reportInvoices">0</h2>
+          </div>
+
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h3>Financial Analytics</h3>
+          </div>
+          <div class="chart-wrap">
+            <canvas id="reportChart"></canvas>
+          </div>
+        </div>
+
+      </section>
+
+      <section class="page" id="users">
+
+        <div class="section-head">
+          <div>
+            <h2>Users & Roles</h2>
+            <p>Manage company team members</p>
+          </div>
+
+          <button class="primary-btn" onclick="openModal('userModal')">
+            <i data-lucide="user-plus"></i>
+            Add User
+          </button>
+        </div>
+
+        <div class="card table-card">
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Role</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="usersTable"></tbody>
+            </table>
+          </div>
+        </div>
+
+      </section>
+
+      <section class="page" id="settings">
+
+        <div class="section-head">
+          <div>
+            <h2>Settings</h2>
+            <p>Manage your company settings</p>
+          </div>
+        </div>
+
+        <div class="card">
+
+          <div class="form-grid">
+
+            <div class="form-group">
+              <label>Company Name</label>
+              <input id="companyName" value="FINOVA Enterprise">
+            </div>
+
+            <div class="form-group">
+              <label>Currency</label>
+              <select id="currency">
+                <option value="USD">USD - US Dollar</option>
+                <option value="EUR">EUR - Euro</option>
+                <option value="EGP">EGP - Egyptian Pound</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>Financial Year</label>
+              <select>
+                <option>2026</option>
+                <option>2027</option>
+                <option>2028</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>Timezone</label>
+              <select>
+                <option>Africa/Cairo</option>
+                <option>UTC</option>
+                <option>Europe/London</option>
+                <option>America/New_York</option>
+              </select>
+            </div>
+
+          </div>
+
+          <div style="margin-top:20px">
+            <button class="primary-btn" onclick="saveSettings()">
+              Save Settings
+            </button>
+          </div>
+
+        </div>
+
+      </section>
+
+    </div>
+
+  </main>
+</div>
+
+<div class="modal" id="transactionModal">
+  <div class="modal-box">
+
+    <div class="modal-head">
+      <h2>Add Transaction</h2>
+      <button class="close" onclick="closeModal('transactionModal')">×</button>
+    </div>
+
+    <form id="transactionForm">
+
+      <div class="form-grid">
+
+        <div class="form-group full">
+          <label>Description</label>
+          <input id="transactionDescription" required>
+        </div>
+
+        <div class="form-group">
+          <label>Type</label>
+          <select id="transactionType">
+            <option value="income">Income</option>
+            <option value="expense">Expense</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Category</label>
+          <input id="transactionCategory" placeholder="Sales">
+        </div>
+
+        <div class="form-group">
+          <label>Amount</label>
+          <input id="transactionAmount" type="number" step="0.01" required>
+        </div>
+
+        <div class="form-group">
+          <label>Date</label>
+          <input id="transactionDate" type="date" required>
+        </div>
+
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="secondary-btn" onclick="closeModal('transactionModal')">Cancel</button>
+        <button class="primary-btn">Save Transaction</button>
+      </div>
+
+    </form>
+  </div>
+</div>
+
+<div class="modal" id="accountModal">
+  <div class="modal-box">
+
+    <div class="modal-head">
+      <h2>Add Account</h2>
+      <button class="close" onclick="closeModal('accountModal')">×</button>
+    </div>
+
+    <form id="accountForm">
+
+      <div class="form-grid">
+
+        <div class="form-group">
+          <label>Account Name</label>
+          <input id="accountName" required>
+        </div>
+
+        <div class="form-group">
+          <label>Bank</label>
+          <input id="accountBank">
+        </div>
+
+        <div class="form-group">
+          <label>Type</label>
+          <select id="accountType">
+            <option>Bank Account</option>
+            <option>Cash</option>
+            <option>Credit Card</option>
+            <option>Investment</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Balance</label>
+          <input id="accountBalance" type="number" step="0.01" required>
+        </div>
+
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="secondary-btn" onclick="closeModal('accountModal')">Cancel</button>
+        <button class="primary-btn">Save Account</button>
+      </div>
+
+    </form>
+  </div>
+</div>
+
+<div class="modal" id="invoiceModal">
+  <div class="modal-box">
+
+    <div class="modal-head">
+      <h2>Add Invoice</h2>
+      <button class="close" onclick="closeModal('invoiceModal')">×</button>
+    </div>
+
+    <form id="invoiceForm">
+
+      <div class="form-grid">
+
+        <div class="form-group">
+          <label>Invoice Number</label>
+          <input id="invoiceNumber" required>
+        </div>
+
+        <div class="form-group">
+          <label>Client</label>
+          <input id="invoiceClient" required>
+        </div>
+
+        <div class="form-group">
+          <label>Amount</label>
+          <input id="invoiceAmount" type="number" step="0.01" required>
+        </div>
+
+        <div class="form-group">
+          <label>Status</label>
+          <select id="invoiceStatus">
+            <option value="paid">Paid</option>
+            <option value="pending">Pending</option>
+            <option value="overdue">Overdue</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Date</label>
+          <input id="invoiceDate" type="date" required>
+        </div>
+
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="secondary-btn" onclick="closeModal('invoiceModal')">Cancel</button>
+        <button class="primary-btn">Save Invoice</button>
+      </div>
+
+    </form>
+  </div>
+</div>
+
+<div class="modal" id="userModal">
+  <div class="modal-box">
+
+    <div class="modal-head">
+      <h2>Add User</h2>
+      <button class="close" onclick="closeModal('userModal')">×</button>
+    </div>
+
+    <form id="userForm">
+
+      <div class="form-grid">
+
+        <div class="form-group">
+          <label>Name</label>
+          <input id="userName" required>
+        </div>
+
+        <div class="form-group">
+          <label>Email</label>
+          <input id="userEmail" type="email" required>
+        </div>
+
+        <div class="form-group">
+          <label>Role</label>
+          <select id="userRole">
+            <option>Administrator</option>
+            <option>Finance Manager</option>
+            <option>Accountant</option>
+            <option>Viewer</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Status</label>
+          <select id="userStatus">
+            <option>Active</option>
+            <option>Pending</option>
+            <option>Inactive</option>
+          </select>
+        </div>
+
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="secondary-btn" onclick="closeModal('userModal')">Cancel</button>
+        <button class="primary-btn">Save User</button>
+      </div>
+
+    </form>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+import {
+  getDatabase,
+  ref,
+  push,
+  set,
+  onValue
+} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey:"AIzaSyC0T1-f_yQgxcl-KRhMckouYTB9XZm_r_o",
+  authDomain:"hos-app-bdb1f.firebaseapp.com",
+  databaseURL:"https://hos-app-bdb1f-default-rtdb.firebaseio.com",
+  projectId:"hos-app-bdb1f",
+  storageBucket:"hos-app-bdb1f.firebasestorage.app",
+  messagingSenderId:"439024586891",
+  appId:"1:439024586891:web:a4175eb145db5cce448e",
+  measurementId:"G-4T493WV99B"
+};
+
+const firebaseApp = initializeApp(firebaseConfig);
+const db = getDatabase(firebaseApp);
+
+let transactions = {};
+let accounts = {};
+let invoices = {};
+let users = {};
+
+const money = value =>
+  new Intl.NumberFormat("en-US",{
+    style:"currency",
+    currency:"USD",
+    maximumFractionDigits:2
+  }).format(Number(value)||0);
+
+function companyRef(name){
+  return ref(db,`finova/${name}`);
+}
+
+function renderDashboard(){
+  let revenue = 0;
+  let expenses = 0;
+
+  Object.values(transactions).forEach(item=>{
+    const amount = Number(item.amount)||0;
+
+    if(item.type==="income"){
+      revenue += amount;
+    }else{
+      expenses += amount;
+    }
+  });
+
+  const profit = revenue-expenses;
+
+  let outstanding = 0;
+
+  Object.values(invoices).forEach(item=>{
+    if(item.status==="pending" || item.status==="overdue"){
+      outstanding += Number(item.amount)||0;
+    }
+  });
+
+  document.getElementById("totalRevenue").textContent = money(revenue);
+  document.getElementById("totalExpenses").textContent = money(expenses);
+  document.getElementById("netProfit").textContent = money(profit);
+  document.getElementById("outstanding").textContent = money(outstanding);
+
+  document.getElementById("reportRevenue").textContent = money(revenue);
+  document.getElementById("reportExpenses").textContent = money(expenses);
+  document.getElementById("reportProfit").textContent = money(profit);
+  document.getElementById("reportInvoices").textContent = Object.keys(invoices).length;
+
+  renderRecentTransactions();
+  renderTransactions();
+  renderAccounts();
+  renderInvoices();
+  renderUsers();
+  updateCharts();
+}
+
+function renderRecentTransactions(){
+  const container = document.getElementById("recentTransactions");
+  const items = Object.values(transactions).slice(-5).reverse();
+
+  if(!items.length){
+    container.innerHTML = `
+      <div class="empty">
+        <i data-lucide="receipt"></i>
+        <p>No transactions yet</p>
+      </div>
+    `;
+    lucide.createIcons();
+    return;
+  }
+
+  container.innerHTML = items.map(item=>`
+    <div class="transaction">
+      <div class="transaction-left">
+        <div class="transaction-icon ${item.type}">
+          <i data-lucide="${item.type==="income"?"arrow-down-left":"arrow-up-right"}"></i>
+        </div>
+        <div>
+          <strong>${escapeHtml(item.description||"Transaction")}</strong>
+          <small>${escapeHtml(item.category||"General")} · ${escapeHtml(item.date||"")}</small>
+        </div>
+      </div>
+      <div class="amount ${item.type}">
+        ${item.type==="income"?"+":"-"}${money(item.amount)}
+      </div>
+    </div>
+  `).join("");
+
+  lucide.createIcons();
+}
+
+function renderTransactions(){
+  const table = document.getElementById("transactionsTable");
+  const items = Object.values(transactions).reverse();
+
+  if(!items.length){
+    table.innerHTML = `
+      <tr>
+        <td colspan="5">
+          <div class="empty">
+            <i data-lucide="receipt"></i>
+            <p>No transactions found</p>
+          </div>
+        </td>
+      </tr>
+    `;
+    lucide.createIcons();
+    return;
+  }
+
+  table.innerHTML = items.map(item=>`
+    <tr>
+      <td>${escapeHtml(item.description||"")}</td>
+      <td>${item.type==="income"?"Income":"Expense"}</td>
+      <td>${escapeHtml(item.category||"General")}</td>
+      <td>${money(item.amount)}</td>
+      <td>${escapeHtml(item.date||"")}</td>
+    </tr>
+  `).join("");
+}
+
+function renderAccounts(){
+  const table = document.getElementById("accountsTable");
+  const items = Object.values(accounts);
+
+  if(!items.length){
+    table.innerHTML = `
+      <tr>
+        <td colspan="4">
+          <div class="empty">
+            <i data-lucide="wallet-cards"></i>
+            <p>No accounts found</p>
+          </div>
+        </td>
+      </tr>
+    `;
+    lucide.createIcons();
+    return;
+  }
+
+  table.innerHTML = items.map(item=>`
+    <tr>
+      <td>${escapeHtml(item.name||"")}</td>
+      <td>${escapeHtml(item.bank||"")}</td>
+      <td>${escapeHtml(item.type||"")}</td>
+      <td>${money(item.balance)}</td>
+    </tr>
+  `).join("");
+}
+
+function renderInvoices(){
+  const table = document.getElementById("invoicesTable");
+  const items = Object.values(invoices);
+
+  if(!items.length){
+    table.innerHTML = `
+      <tr>
+        <td colspan="5">
+          <div class="empty">
+            <i data-lucide="file-text"></i>
+            <p>No invoices found</p>
+          </div>
+        </td>
+      </tr>
+    `;
+    lucide.createIcons();
+    return;
+  }
+
+  table.innerHTML = items.map(item=>`
+    <tr>
+      <td>${escapeHtml(item.number||"")}</td>
+      <td>${escapeHtml(item.client||"")}</td>
+      <td>${money(item.amount)}</td>
+      <td>
+        <span class="status ${item.status}">
+          ${escapeHtml(item.status||"pending")}
+        </span>
+      </td>
+      <td>${escapeHtml(item.date||"")}</td>
+    </tr>
+  `).join("");
+}
+
+function renderUsers(){
+  const table = document.getElementById("usersTable");
+  const items = Object.values(users);
+
+  if(!items.length){
+    table.innerHTML = `
+      <tr>
+        <td colspan="4">
+          <div class="empty">
+            <i data-lucide="users"></i>
+            <p>No users found</p>
+          </div>
+        </td>
+      </tr>
+    `;
+    lucide.createIcons();
+    return;
+  }
+
+  table.innerHTML = items.map(item=>`
+    <tr>
+      <td>${escapeHtml(item.name||"")}</td>
+      <td>${escapeHtml(item.email||"")}</td>
+      <td>${escapeHtml(item.role||"")}</td>
+      <td>${escapeHtml(item.status||"Active")}</td>
+    </tr>
+  `).join("");
+}
+
+function updateCharts(){
+  const revenue = [];
+  const expenses = [];
+
+  for(let i=0;i<6;i++){
+    revenue.push(0);
+    expenses.push(0);
+  }
+
+  Object.values(transactions).forEach(item=>{
+    const date = new Date(item.date||Date.now());
+    const month = date.getMonth();
+    const currentMonth = new Date().getMonth();
+    const index = month-currentMonth+5;
+
+    if(index>=0 && index<6){
+      if(item.type==="income"){
+        revenue[index] += Number(item.amount)||0;
+      }else{
+        expenses[index] += Number(item.amount)||0;
+      }
+    }
+  });
+
+  if(window.financeChartInstance){
+    window.financeChartInstance.destroy();
+  }
+
+  const ctx = document.getElementById("financeChart");
+
+  if(ctx){
+    window.financeChartInstance = new Chart(ctx,{
+      type:"line",
+      data:{
+        labels:["Month 1","Month 2","Month 3","Month 4","Month 5","Current"],
+        datasets:[
+          {
+            label:"Revenue",
+            data:revenue,
+            borderColor:"#6c63ff",
+            backgroundColor:"rgba(108,99,255,.1)",
+            fill:true,
+            tension:.4
+          },
+          {
+            label:"Expenses",
+            data:expenses,
+            borderColor:"#00c6ff",
+            backgroundColor:"rgba(0,198,255,.06)",
+            fill:true,
+            tension:.4
+          }
+        ]
+      },
+      options:{
+        responsive:true,
+        maintainAspectRatio:false,
+        plugins:{
+          legend:{
+            labels:{
+              color:"#aab3c2",
+              font:{size:11}
+            }
+          }
+        },
+        scales:{
+          x:{
+            ticks:{color:"#6f7b8f"},
+            grid:{color:"rgba(255,255,255,.04)"}
+          },
+          y:{
+            ticks:{color:"#6f7b8f"},
+            grid:{color:"rgba(255,255,255,.04)"}
+          }
+        }
+      }
+    });
+  }
+
+  if(window.reportChartInstance){
+    window.reportChartInstance.destroy();
+  }
+
+  const reportCtx = document.getElementById("reportChart");
+
+  if(reportCtx){
+    let revenueTotal = 0;
+    let expenseTotal = 0;
+
+    Object.values(transactions).forEach(item=>{
+      if(item.type==="income"){
+        revenueTotal += Number(item.amount)||0;
+      }else{
+        expenseTotal += Number(item.amount)||0;
+      }
+    });
+
+    window.reportChartInstance = new Chart(reportCtx,{
+      type:"doughnut",
+      data:{
+        labels:["Revenue","Expenses"],
+        datasets:[
+          {
+            data:[revenueTotal,expenseTotal],
+            backgroundColor:["#6c63ff","#00c6ff"],
+            borderWidth:0
+          }
+        ]
+      },
+      options:{
+        responsive:true,
+        maintainAspectRatio:false,
+        plugins:{
+          legend:{
+            labels:{
+              color:"#aab3c2"
+            }
+          }
+        }
+      }
+    });
+  }
+}
+
+function escapeHtml(value){
+  return String(value??"")
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+}
+
+window.openModal=function(id){
+  document.getElementById(id).classList.add("show");
+};
+
+window.closeModal=function(id){
+  document.getElementById(id).classList.remove("show");
+};
+
+window.saveSettings=function(){
+  localStorage.setItem(
+    "finovaSettings",
+    JSON.stringify({
+      companyName:document.getElementById("companyName").value,
+      currency:document.getElementById("currency").value
+    })
+  );
+
+  const box = document.createElement("div");
+  box.textContent="Settings saved";
+  box.style.position="fixed";
+  box.style.bottom="25px";
+  box.style.left="50%";
+  box.style.transform="translateX(-50%)";
+  box.style.background="#101828";
+  box.style.color="#fff";
+  box.style.padding="13px 20px";
+  box.style.borderRadius="12px";
+  box.style.zIndex="99999";
+
+  document.body.appendChild(box);
+
+  setTimeout(()=>box.remove(),2000);
+};
+
+document.querySelectorAll(".nav button").forEach(button=>{
+  button.addEventListener("click",()=>{
+    const page = button.dataset.page;
+
+    document.querySelectorAll(".nav button")
+      .forEach(item=>item.classList.remove("active"));
+
+    button.classList.add("active");
+
+    document.querySelectorAll(".page")
+      .forEach(item=>item.classList.remove("active"));
+
+    document.getElementById(page)?.classList.add("active");
+
+    const titles={
+      dashboard:["Dashboard","Enterprise financial overview"],
+      transactions:["Transactions","Manage company transactions"],
+      accounts:["Accounts","Manage financial accounts"],
+      invoices:["Invoices","Manage company invoices"],
+      reports:["Reports","Financial analytics and reports"],
+      users:["Users & Roles","Manage company team members"],
+      settings:["Settings","Manage your company settings"]
+    };
+
+    document.getElementById("pageTitle").textContent=titles[page][0];
+    document.getElementById("pageSubtitle").textContent=titles[page][1];
+
+    document.getElementById("sidebar").classList.remove("open");
+  });
+});
+
+document.getElementById("menuBtn")?.addEventListener("click",()=>{
+  document.getElementById("sidebar").classList.toggle("open");
+});
+
+document.getElementById("transactionForm").addEventListener("submit",async e=>{
+  e.preventDefault();
+
+  const data={
+    description:document.getElementById("transactionDescription").value,
+    type:document.getElementById("transactionType").value,
+    category:document.getElementById("transactionCategory").value,
+    amount:Number(document.getElementById("transactionAmount").value),
+    date:document.getElementById("transactionDate").value
+  };
+
+  try{
+    await set(
+      push(companyRef("transactions")),
+      data
+    );
+
+    e.target.reset();
+    closeModal("transactionModal");
+
+  }catch(error){
+    alert("Unable to save transaction");
+  }
+});
+
+document.getElementById("accountForm").addEventListener("submit",async e=>{
+  e.preventDefault();
+
+  const data={
+    name:document.getElementById("accountName").value,
+    bank:document.getElementById("accountBank").value,
+    type:document.getElementById("accountType").value,
+    balance:Number(document.getElementById("accountBalance").value)
+  };
+
+  try{
+    await set(
+      push(companyRef("accounts")),
+      data
+    );
+
+    e.target.reset();
+    closeModal("accountModal");
+
+  }catch(error){
+    alert("Unable to save account");
+  }
+});
+
+document.getElementById("invoiceForm").addEventListener("submit",async e=>{
+  e.preventDefault();
+
+  const data={
+    number:document.getElementById("invoiceNumber").value,
+    client:document.getElementById("invoiceClient").value,
+    amount:Number(document.getElementById("invoiceAmount").value),
+    status:document.getElementById("invoiceStatus").value,
+    date:document.getElementById("invoiceDate").value
+  };
+
+  try{
+    await set(
+      push(companyRef("invoices")),
+      data
+    );
+
+    e.target.reset();
+    closeModal("invoiceModal");
+
+  }catch(error){
+    alert("Unable to save invoice");
+  }
+});
+
+document.getElementById("userForm").addEventListener("submit",async e=>{
+  e.preventDefault();
+
+  const data={
+    name:document.getElementById("userName").value,
+    email:document.getElementById("userEmail").value,
+    role:document.getElementById("userRole").value,
+    status:document.getElementById("userStatus").value
+  };
+
+  try{
+    await set(
+      push(companyRef("users")),
+      data
+    );
+
+    e.target.reset();
+    closeModal("userModal");
+
+  }catch(error){
+    alert("Unable to save user");
+  }
+});
+
+document.querySelectorAll(".modal").forEach(modal=>{
+  modal.addEventListener("click",e=>{
+    if(e.target===modal){
+      modal.classList.remove("show");
+    }
+  });
+});
+
+const savedSettings = JSON.parse(
+  localStorage.getItem("finovaSettings")||"null"
+);
+
+if(savedSettings){
+  document.getElementById("companyName").value =
+    savedSettings.companyName||"FINOVA Enterprise";
+
+  document.getElementById("currency").value =
+    savedSettings.currency||"USD";
+}
+
+onValue(
+  companyRef("transactions"),
+  snapshot=>{
+    transactions=snapshot.exists()?snapshot.val():{};
+    renderDashboard();
+  },
+  ()=>{
+    transactions={};
+    renderDashboard();
+  }
+);
+
+onValue(
+  companyRef("accounts"),
+  snapshot=>{
+    accounts=snapshot.exists()?snapshot.val():{};
+    renderDashboard();
+  },
+  ()=>{
+    accounts={};
+    renderDashboard();
+  }
+);
+
+onValue(
+  companyRef("invoices"),
+  snapshot=>{
+    invoices=snapshot.exists()?snapshot.val():{};
+    renderDashboard();
+  },
+  ()=>{
+    invoices={};
+    renderDashboard();
+  }
+);
+
+onValue(
+  companyRef("users"),
+  snapshot=>{
+    users=snapshot.exists()?snapshot.val():{};
+    renderDashboard();
+  },
+  ()=>{
+    users={};
+    renderDashboard();
+  }
+);
+
+setTimeout(()=>{
+  document.getElementById("intro").classList.add("hide");
+
+  setTimeout(()=>{
+    document.getElementById("intro").style.display="none";
+    document.getElementById("app").style.display="block";
+  },700);
+},3000);
+
+lucide.createIcons();
+renderDashboard();
+</script>
+
+</body>
+</html>
